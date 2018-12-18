@@ -57,23 +57,23 @@ postgres=# GRANT ALL PRIVILEGES ON DATABASE my_database TO my_user;
 postgres=# \q
 ```
 
-## Set environment variables
+## Set environment variables and settings
 
 The triple dotted `...env` file holds a template for your environmental settings. Proceed as follows:
 
 1. Double check that `.gitignore` has a line with `.env`, so git will not track the (confidential) environment settings.
 1. Rename from ...env to .env (`mv ...env .env`)
-1. Edit passwords, secret keys and environment-specific settings to suit your environment. The database settings should match the values of the Postgres database you created.
-
-
-## Edit settings, apply migrations and get started
+1. Follow the instruction in the file to edit passwords, secret keys and environment-specific settings to suit your environment. The database settings should match the values of the Postgres database you created.
 
 Configure `BANDIT_EMAIL` in `project/settings/development.py` to match your email address to use during development.
 
+## Edit settings, apply migrations and get started
+
+Commit the changes and run the project in a pipenv shell with the variables from `.env`:
 ```
 git add -A
 git commit -m "Initial commit, django template from github.com/snirp/django-starter"
-git push origin master
+git push --set-upstream origin master
 pipenv install
 pipenv shell
 (project)$ python manage.py migrate
