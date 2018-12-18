@@ -1,5 +1,14 @@
 # Django starter templates with a choice of authentication
-This is a collection of mildly opinionated Django starter templates. The main goal is to get started quickly in common cases and avoid repetition or bad practices during setup. With this I am able to address some personal gripes. Not everyone may share these and it's open to discussion what exeactly represents "best practice". You can check out different branches 
+This is a collection of mildly opinionated Django starter templates. The main goal is to get started quickly in common cases and avoid repetition or bad practices during setup. With this I am able to address some personal gripes. Not everyone may share these and it's open to discussion what exeactly represents "best practice". 
+
+You can check out a specific branch to start with the authentication method you prefer.
+
+## Features
+
++ A basic custom user model `users.models.User` that inherits from `AbstractBaseUser`
++ Easy choice between `username`, `email` or `username_email` authentication methods
++ Fully compatible with `allauth` views and templates for account management
++ Emails sent in the development phase are intercepted and sent to an address you choose
 
 ## Installed libraries:
 
@@ -10,36 +19,32 @@ This is a collection of mildly opinionated Django starter templates. The main go
 + django-email-bandit - [docs](https://django-email-bandit.readthedocs.io/en/latest/)
 
 ## Configuration choices
+The following is true about the configuration choices:
 
-+ Stick to the default Django folder layout, with the name of the project and the project-folder simply: `project`
-+ Manage confidentional and environment-spefic settings in a `.env` file (environmental variables)
++ Default Django folder layout, with the name of the project and the project-folder simply: `project`
++ Confidentional and environment-specific settings are managed in a `.env` file (environmental variables)
 + A `base` settings file is extended with phase-specific settings files (`development`, `production`, etc)
 + The debug-toolbar will only be activated when `DEBUG` is set to `True`
 + Postgres is the default database engine
 
-## Features
-
-+ A basic custom user model `users.models.User` that inherits from `AbstractBaseUser`
-+ Easy choice between `username`, `email` or `username_email` authentication methods
-+ Fully compatible with `allauth` views and templates for account management
-+ Emails sent in the development phase are intercepted and sent to an address you choose
-
 # Get started
+Follow these steps to get started:
 
 ## Checkout authentication method
+You can checkout one of the following braches, each representing a different authentication method:
++ `auth/username` (authenticate with username) - password has to be entered twice; email address is not required.
++ `auth/email` (authenticate with email address) - users have no username, the email will serve as the username field
++ `auth/mixed` (authenticate with email or username) - both username and email are required
+
+The following commands take care of initializing a git repository, checking out the desired branch into your master and installing the dependencies. You may want to initialize an empty github repository to serve as your remote first. In your empty project folder do:
 ```
 git init
-git remote add django-starters git://github.com/snirp/django2.1-starters.git
-git checkout -b master django-starters/<branchname>
-pipenv install
+git remote add django-starter git://github.com/snirp/django-starter.git
+git fetch --all
+git checkout -b master django-starter/<branchname>
+git remote rm django-starter
+git remote add origin <your/repo/address.git>
 ```
-You can checkout one of the following branches, each representing a different authentication method:
-+ `username` **Authenticate with username**: password has to be entered twice; email address is not required.
-+ `email` **Authenticate with email address**: users have no username, the email will serve as the username field
-+ `username_email` **Authenticate with email or username**: both username and email are required
-+ `master` **Switch between methods**: choose one the above methods by setting the corresponding value as `ACCOUNT_AUTHENTICATION_METHOD` in `settings/base.py` (default is `username`).
-
-In the `master` branch `users/models.py` and `users/admin.py` contain a few `if ... else` statements that make sure the model and the admin pages match the authentication choice. This allows you to quickly switch between methods, which can be useful if you are trying decide on the proper authentication method. Otherwise it might be easier to start with one of the other branches.
 
 ## Create database
 
@@ -66,9 +71,14 @@ The triple dotted `...env` file holds a template for your environmental settings
 Configure `BANDIT_EMAIL` in `project/settings/development.py` to match your email address to use during development.
 
 ```
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
+git add -A
+git commit -m "Initial commit, django template from github.com/snirp/django-starter"
+git push origin master
+pipenv install
+pipenv shell
+(project)$ python manage.py migrate
+(project)$ python manage.py createsuperuser
+(project)$ python manage.py runserver
 ```
 
 You can edit the Site settings in the admin to match your project.
