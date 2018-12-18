@@ -1,17 +1,14 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
-from django.conf import settings
 
-# 'email' or 'username' or 'username_email'
-auth = settings.ACCOUNT_AUTHENTICATION_METHOD
 
 class UserManager(BaseUserManager):
 
   def _create_user(self, email, username, password, is_staff, is_superuser, **extra_fields):
-    if auth != 'username' and not email:
+    if not email:
         raise ValueError('Users must have an email address')
-    if auth != 'email' and not username:
+    if not username:
         raise ValueError('Users must have a username')
     now = timezone.now()
     email = self.normalize_email(email)
@@ -40,8 +37,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
-    if auth != 'email':
-        username = models.CharField(max_length=50, unique=True)
+    username = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=254, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -49,7 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     
-    USERNAME_FIELD = 'email' if auth == 'email' else 'username'
+    USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -57,4 +53,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return "/accounts/user/%i/" % (self.pk)
-
